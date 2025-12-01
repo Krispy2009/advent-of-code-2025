@@ -22,7 +22,8 @@ func main() {
 	start := 50
 	max := 99
 	min := 0
-	pointsAtZero := 0
+	part1 := 0
+	part2 := 0
 
 	lines, err := os.ReadFile("input.txt")
 
@@ -32,9 +33,13 @@ func main() {
 	}
 	for _, line := range strings.Split(string(lines), "\n") {
 		direction, clicks := parseLine(line)
+
 		if direction == "L" {
 			for i := 0; i < clicks; i++ {
 				start -= 1
+				if start == 0 {
+					part2 += 1
+				}
 				if start < min {
 					start = max
 				}
@@ -44,14 +49,14 @@ func main() {
 				start += 1
 				if start > max {
 					start = min
+					part2 += 1
 				}
 			}
 		}
-
 		if start == 0 {
-			pointsAtZero += 1
+			part1 += 1
 		}
-
 	}
-	fmt.Println("Points at 0: " + strconv.Itoa(pointsAtZero))
+	fmt.Println("Part 1: " + strconv.Itoa(part1))
+	fmt.Println("Part 2: " + strconv.Itoa(part2))
 }
