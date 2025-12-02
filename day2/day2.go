@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func isInvalid(productId string) bool {
+func isInvalidPart1(productId string) bool {
 	if len(productId)%2 != 0 {
 		return false
 	}
@@ -20,25 +20,43 @@ func isInvalid(productId string) bool {
 	return false
 }
 
-func findInvalidProductIds(productIdRange string) []int {
+func isInvalidPart2(productId string) bool {
+	for i := 0; i < len(productId); i++ {
+		subString := productId[0 : i+1]
+		if len(subString) > len(productId)/2 {
+			continue
+		}
+		newStr := strings.Repeat(subString, len(productId)/len(subString))
+		if newStr == productId {
+			return true
+		}
+	}
+	return false
+}
+
+func findInvalidProductIds(productIdRange string) ([]int, []int) {
 	productIds := []int{}
-	invalidProductIds := []int{}
+	invalidProductIdsPart1 := []int{}
+	invalidProductIdsPart2 := []int{}
 	for _, productId := range strings.Split(productIdRange, "-") {
 		productIdInt, err := strconv.Atoi(productId)
 		if err != nil {
 			fmt.Println("Error converting productId to int:", err)
-			return []int{}
+			return []int{}, []int{}
 		}
 		productIds = append(productIds, productIdInt)
 
 	}
 	numRange := makeRange(productIds[0], productIds[1])
 	for _, num := range numRange {
-		if isInvalid(strconv.Itoa(num)) {
-			invalidProductIds = append(invalidProductIds, num)
+		if isInvalidPart1(strconv.Itoa(num)) {
+			invalidProductIdsPart1 = append(invalidProductIdsPart1, num)
+		}
+		if isInvalidPart2(strconv.Itoa(num)) {
+			invalidProductIdsPart2 = append(invalidProductIdsPart2, num)
 		}
 	}
-	return invalidProductIds
+	return invalidProductIdsPart1, invalidProductIdsPart2
 }
 
 func makeRange(start, end int) []int {
@@ -59,7 +77,8 @@ func sum(productIds []int) int {
 
 func main() {
 	content, err := os.ReadFile("input.txt")
-	sumOfInvalidProductIds := 0
+	sumOfInvalidProductIdsPart1 := 0
+	sumOfInvalidProductIdsPart2 := 0
 
 	if err != nil {
 		fmt.Println("Error reading file:", err)
@@ -73,11 +92,13 @@ func main() {
 
 	for _, productIdRange := range productIdsRanges {
 		// fmt.Println("productIdRange: ", productIdRange)
-		invalidProductIds := findInvalidProductIds(productIdRange)
+		invalidProductIdsPart1, invalidProductIdsPart2 := findInvalidProductIds(productIdRange)
 		// fmt.Println(invalidProductIds)
 
-		sumOfInvalidProductIds += sum(invalidProductIds)
+		sumOfInvalidProductIdsPart1 += sum(invalidProductIdsPart1)
+		sumOfInvalidProductIdsPart2 += sum(invalidProductIdsPart2)
 	}
-	fmt.Println("sumOfInvalidProductIds: ", sumOfInvalidProductIds)
+	fmt.Println("sumOfInvalidProductIdsPart1: ", sumOfInvalidProductIdsPart1)
+	fmt.Println("sumOfInvalidProductIdsPart2: ", sumOfInvalidProductIdsPart2)
 
 }
