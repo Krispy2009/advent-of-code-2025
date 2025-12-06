@@ -11,16 +11,6 @@ def solve_equation(equation):
         for i in range(len(nums)):
             ans *= nums[i]
         return ans
-    elif operand == "-":
-        ans = nums[0]
-        for i in range(1, len(nums)):
-            ans -= nums[i]
-        return ans
-    elif operand == "/":
-        ans = nums[0]
-        for i in range(1, len(nums)):
-            ans /= nums[i]
-        return ans
     
 with open("input.txt", "r") as file:
     lines = file.readlines()
